@@ -1,26 +1,26 @@
 {
   "variables": {
     "username": "vagrant",
-    "password": "vagrant"
+    "password": "vagrant",
+    "hostname": "devbox",
+    "box_name": "xubuntu1404"
   },
   "builders": [{
     "type": "virtualbox-iso",
-    "vm_name": "devbox",
+    "vm_name": "{{user `box_name`}}",
     "guest_os_type": "Ubuntu_64",
 
     "iso_url": "iso/xubuntu-14.04-desktop-amd64.iso",
     "iso_checksum": "ae446659057ee49e57773bf446398856",
     "iso_checksum_type": "none",
 
-    "http_directory" : "./preseed",
-    "http_port_min" : 9001,
-    "http_port_max" : 9001,
+    "http_directory" : ".",
     
     "boot_wait": "3s",
     "boot_command": [
       "<enter><enter><esc><enter> <wait>",
-      "/casper/vmlinuz.efi url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/trusty.cfg ",
-      "hostname={{ .Name }} ",
+      "/casper/vmlinuz.efi url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/preseed.cfg ",
+      "hostname={{user `hostname`}} ",
       "initrd=/casper/initrd.lz boot=casper ",
       "automatic-ubiquity quiet splash noprompt auto=true --<enter><wait>"
     ],
@@ -36,8 +36,16 @@
     "headless": false,
     "vboxmanage": [
       ["modifyvm", "{{.Name}}", "--memory", "512"],
-      ["modifyvm", "{{.Name}}", "--cpus", "2"]
+      ["modifyvm", "{{.Name}}", "--cpus", "1"]
     ]
   }],
-  "post-processors": ["vagrant"]
+  "provisioners": [{
+    "type": "shell",
+    "environment_vars": ["USER={{user `username`}}"],
+    "script": "scripts/vagrant.sh"
+  }],
+  "post-processors": [{
+    "type": "vagrant",
+    "output": "{{user `box_name`}}.box"
+  }]
 }
