@@ -41,8 +41,7 @@
   }],
   "provisioners": [{
     "type": "shell",
-    "environment_vars": ["USER={{user `username`}}"],
-    "execute_command": "echo '{{user `password`}}' | {{.Vars}} sudo -E -S bash '{{.Path}}'",
+    "environment_vars": ["USERNAME={{user `username`}}"],
     "script": "scripts/vagrant.sh"
   }],
   "post-processors": [{
