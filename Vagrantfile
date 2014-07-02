@@ -31,8 +31,10 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.provision "shell",
     inline: "sudo -E apt-get update; sudo -E apt-get install -y puppet"
 
-  # config.vm.provision "puppet" do |puppet|
-  #   puppet.manifests_path = "manifests"
-  #   puppet.manifest_file  = "site.pp"
-  # end
+  config.librarian_puppet.placeholder_filename = ".gitinclude"
+
+  config.vm.provision :puppet do |puppet|
+    puppet.manifests_path = "manifests"
+    puppet.module_path = "modules"
+  end
 end

@@ -1,4 +1,7 @@
 .vagrant/
+.tmp/
 packer_cache/
 output-virtualbox-iso/
 *.box
+modules/*
+!modules/.gitinclude
